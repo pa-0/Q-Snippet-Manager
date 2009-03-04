@@ -16,7 +16,7 @@ public:
     Snippet( const Snippet& snippet )
             : mod( snippet.mod ), op( snippet.mod ), ed( snippet.ed ), tit( snippet.tit ), cd( snippet.cd ),
             tab( snippet.tab ), cat( snippet.cat ) {}
-    ~Snippet() { qDebug( "oops" ); }
+    ~Snippet() {}
     QString code() { return cd; }
     QPlainTextEdit* edit() { return ed; }
     bool isCategory() { return cat; }

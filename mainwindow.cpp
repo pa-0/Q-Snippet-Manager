@@ -3,7 +3,7 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindowClass)
+    : QMainWindow(parent), ui(new Ui::MainWindowClass), model( this )
 {
     ui->setupUi(this);
     ui->tabWidget->removeTab( 0 );
@@ -206,7 +206,7 @@ Snippet* MainWindow::findSnippetByTab( int atab ) {
     return 0;
 }
 
-void MainWindow::saveSnippets( QString fileName ) {
+void MainWindow::saveSnippets( const QString& fileName ) {
     QFile file;
     if( fileName.isEmpty() )
         file.setFileName( "snippets.xml" );
@@ -340,7 +340,6 @@ void MainWindow::on_searchLineEdit_textChanged( QString searchString ) {
 // returns false of all children of a parent were hidden during parse
 bool MainWindow::searchModelForString( const QString &searchString, QStandardItem* parent ) {
     int hiddenCount = 0;
-    bool returnFalseAnyway = false;
 
     for( int i = 0; i < parent->rowCount(); i++ ) {
         QStandardItem* child = parent->child( i, 0 );
@@ -352,7 +351,7 @@ bool MainWindow::searchModelForString( const QString &searchString, QStandardIte
             if( child->rowCount() ) {
                 if( !searchModelForString( searchString, child ) ) {
                     ui->snippetTreeView->setRowHidden( i, parent->index(), true );
-                    returnFalseAnyway = true;
+                    hiddenCount++;
                 }
             } else {
                 ui->snippetTreeView->setRowHidden( i, parent->index(), true );
@@ -365,7 +364,7 @@ bool MainWindow::searchModelForString( const QString &searchString, QStandardIte
         }
     }
 
-    if( returnFalseAnyway || hiddenCount == parent->rowCount() )
+    if( hiddenCount == parent->rowCount() )
         return false;
 
     return true;
@@ -376,4 +375,28 @@ void MainWindow::showAllSnippets( QStandardItem* parent ) {
         ui->snippetTreeView->setRowHidden( i, parent->index(), false );
         showAllSnippets( parent->child( i, 0 ) );
     }
+}
+
+void MainWindow::on_action_Delete_activated() {
+    if( ui->snippetTreeView->currentIndex().isValid() ) {
+        QStandardItem* item = model.itemFromIndex( ui->snippetTreeView->currentIndex() );
+
+        QMessageBox::StandardButton answer = QMessageBox::question( this, tr( "Delete" ),
+                                                                    tr( "Do you really want to delete element %1 and all its subelements?" ).arg( item->text() ),
+                                                                    QMessageBox::Yes | QMessageBox::No );
+        if( answer == QMessageBox::Yes )
+            deleteChildItems( item );
+    }
+}
+
+void MainWindow::deleteChildItems( QStandardItem* parent ) {
+    while( parent->hasChildren() )
+        deleteChildItems( parent->child( 0, 0 ) );
+
+    delete snippetForItem.value( parent );
+    snippetForItem.remove( parent );
+    if( !parent->parent() )
+        model.removeRow( parent->index().row() );
+    else
+        parent->parent()->removeRow( parent->index().row() );
 }

@@ -73,6 +73,8 @@
     <addaction name="action_Save"/>
     <addaction name="actionSave_all"/>
     <addaction name="separator"/>
+    <addaction name="action_Delete"/>
+    <addaction name="separator"/>
     <addaction name="action_Close"/>
     <addaction name="actionClos_e_all"/>
    </widget>
@@ -228,6 +230,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_Delete">
+   <property name="text">
+    <string>&amp;Delete</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
    </property>
   </action>
  </widget>
