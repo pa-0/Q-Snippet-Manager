@@ -20,6 +20,7 @@
 
 #include "Snippet.h"
 #include "standarditemmodel.h"
+#include "workmodedialog.h"
 
 namespace Ui
 {
@@ -41,8 +42,12 @@ private:
     QIcon categoryIcon;
     QIcon snippetIcon;
     StandardItemModel model;
+    WorkModeDialog workModeDialog;
 
 private slots:
+    void on_WorkModeDialog_finished(int result);
+    void on_action_Normal_activated();
+    void on_action_Work_activated();
     void on_action_Delete_activated();
     void on_searchLineEdit_textChanged(QString );
     void on_action_Exit_activated();
@@ -71,6 +76,7 @@ private slots:
 
 // friends
     friend class StandardItemModel;
+    friend class WorkModeDialog;
 };
 
 #endif // MAINWINDOW_H

@@ -87,9 +87,17 @@
     <addaction name="separator"/>
     <addaction name="action_Exit"/>
    </widget>
+   <widget class="QMenu" name="menu_Mode">
+    <property name="title">
+     <string>&amp;Mode</string>
+    </property>
+    <addaction name="action_Normal"/>
+    <addaction name="action_Work"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Snippet"/>
    <addaction name="menu_Add"/>
+   <addaction name="menu_Mode"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -238,6 +246,22 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="action_Normal">
+   <property name="text">
+    <string>&amp;Edit</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="action_Work">
+   <property name="text">
+    <string>&amp;Work</string>
+   </property>
+   <property name="shortcut">
+    <string>F6</string>
    </property>
   </action>
  </widget>

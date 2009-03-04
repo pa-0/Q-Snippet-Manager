@@ -29,7 +29,7 @@ QMimeData* StandardItemModel::mimeData( const QModelIndexList &indexes ) const {
 }
 
 bool StandardItemModel::dropMimeData( const QMimeData *data, Qt::DropAction action,
-                                     int row, int column, const QModelIndex &parent ) {
+                                     int, int, const QModelIndex &parent ) {
     if( action == Qt::IgnoreAction )
         return true;
 
@@ -64,6 +64,9 @@ bool StandardItemModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
                 itemToMove = itemToMove->parent()->takeRow( itemToMove->index().row() ).at( 0 );
 
             p->insertItem( itemToMove, p->snippetForItem.key( newParentSnippet ) );
+            return true;
         }
     }
+
+    return false;
 }

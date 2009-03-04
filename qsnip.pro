@@ -6,10 +6,14 @@ TARGET = qsnip
 TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
-    standarditemmodel.cpp
+    standarditemmodel.cpp \
+    workmodedialog.cpp
 HEADERS += mainwindow.h \
     ui_mainwindow.h \
     Snippet.h \
-    standarditemmodel.h
-FORMS += mainwindow.ui
+    standarditemmodel.h \
+    workmodedialog.h \
+    ui_workmodedialog.h
+FORMS += mainwindow.ui \
+    workmodedialog.ui
 OTHER_FILES += snippets.xml

@@ -1,9 +1,10 @@
 #include "Snippet.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ui_workmodedialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindowClass), model( this )
+    : QMainWindow(parent), ui(new Ui::MainWindowClass), model( this ), workModeDialog( this )
 {
     ui->setupUi(this);
     ui->tabWidget->removeTab( 0 );
@@ -24,6 +25,10 @@ MainWindow::MainWindow(QWidget *parent)
     loadSnippets();
     ui->snippetTreeView->setModel( &model );
     ui->snippetTreeView->expandAll();
+    workModeDialog.m_ui->treeView->expandAll();
+
+    connect( ui->searchLineEdit, SIGNAL( textChanged(QString) ),
+             this, SLOT(on_searchLineEdit_textChanged(QString)) );
 }
 
 MainWindow::~MainWindow()
@@ -332,6 +337,12 @@ void MainWindow::on_action_Exit_activated() {
 }
 
 void MainWindow::on_searchLineEdit_textChanged( QString searchString ) {
+    // check if we're in edit or work mode
+    if( workModeDialog.isVisible() )
+        ui->searchLineEdit->setText( workModeDialog.m_ui->searchLineEdit->text() );
+    else
+        workModeDialog.m_ui->searchLineEdit->setText( ui->searchLineEdit->text() );
+
     showAllSnippets( model.invisibleRootItem() );
     if( !searchString.isEmpty() )
         searchModelForString( searchString, model.invisibleRootItem() );
@@ -351,15 +362,18 @@ bool MainWindow::searchModelForString( const QString &searchString, QStandardIte
             if( child->rowCount() ) {
                 if( !searchModelForString( searchString, child ) ) {
                     ui->snippetTreeView->setRowHidden( i, parent->index(), true );
+                    workModeDialog.m_ui->treeView->setRowHidden( i, parent->index(), true );
                     hiddenCount++;
                 }
             } else {
                 ui->snippetTreeView->setRowHidden( i, parent->index(), true );
+                workModeDialog.m_ui->treeView->setRowHidden( i, parent->index(), true );
                 hiddenCount++;
             }
         } else if( !snippet->isCategory()
                    && ( !child->text().contains( searchString, Qt::CaseInsensitive ) && !snippet->code().contains( searchString, Qt::CaseInsensitive ) ) ) {
             ui->snippetTreeView->setRowHidden( i, parent->index(), true );
+            workModeDialog.m_ui->treeView->setRowHidden( i, parent->index(), true );
             hiddenCount++;
         }
     }
@@ -373,6 +387,7 @@ bool MainWindow::searchModelForString( const QString &searchString, QStandardIte
 void MainWindow::showAllSnippets( QStandardItem* parent ) {
     for( int i = 0; i < parent->rowCount(); i++ ) {
         ui->snippetTreeView->setRowHidden( i, parent->index(), false );
+        workModeDialog.m_ui->treeView->setRowHidden( i, parent->index(), false );
         showAllSnippets( parent->child( i, 0 ) );
     }
 }
@@ -399,4 +414,19 @@ void MainWindow::deleteChildItems( QStandardItem* parent ) {
         model.removeRow( parent->index().row() );
     else
         parent->parent()->removeRow( parent->index().row() );
+}
+
+void MainWindow::on_action_Work_activated() {
+    this->hide();
+    workModeDialog.show();
+}
+
+void MainWindow::on_action_Normal_activated() {
+    this->show();
+    workModeDialog.hide();
+}
+
+void MainWindow::on_WorkModeDialog_finished( int ) {
+    // ignore the result
+   on_action_Normal_activated();
 }
