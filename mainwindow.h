@@ -42,21 +42,28 @@ private:
     QStandardItemModel model;
 
 private slots:
+    void on_searchLineEdit_textChanged(QString );
+    void on_action_Exit_activated();
+    void on_actionSave_snippets_as_activated();
+    void on_action_Save_2_activated();
     void on_action_Main_category_activated();
     void on_actionClos_e_all_activated();
     void on_action_Close_activated();
     void on_actionSave_all_activated();
-    Snippet* findSnippetByTab( int atab );
-    void insertItem( QStandardItem* item, QStandardItem* parent );
-    void loadSnippets();
     void on_action_Save_activated();
     void on_action_Snippet_activated();
     void on_action_Category_activated();
     void on_snippetTreeView_activated(QModelIndex index);
+
+    Snippet* findSnippetByTab( int atab );
+    void insertItem( QStandardItem* item, QStandardItem* parent );
+    void loadSnippets();
     void parseCategoryElement( const QDomElement &element, QStandardItem* parent );
     void parseModel( QStandardItem* parent, QString& xml );
     void restoreTabNumbers();
-    void saveSnippets();
+    void saveSnippets( QString fileName = "" );
+    bool searchModelForString( const QString &searchString, QStandardItem* parent );
+    void showAllSnippets( QStandardItem* parent );
     void snippetsCodeModified();
 };
 

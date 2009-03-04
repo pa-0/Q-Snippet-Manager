@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'mainwindow.ui'
 **
-** Created: Tue Mar 3 01:25:06 2009
+** Created: Wed Mar 4 00:03:02 2009
 **      by: Qt User Interface Compiler version 4.4.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -39,6 +39,9 @@ public:
     QAction *action_Close;
     QAction *actionClos_e_all;
     QAction *action_Main_category;
+    QAction *action_Save_2;
+    QAction *actionSave_snippets_as;
+    QAction *action_Exit;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_2;
     QTabWidget *tabWidget;
@@ -47,6 +50,7 @@ public:
     QMenuBar *menuBar;
     QMenu *menu_Add;
     QMenu *menu_Snippet;
+    QMenu *menu_File;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
     QDockWidget *leftDockWidget;
@@ -74,6 +78,12 @@ public:
     actionClos_e_all->setObjectName(QString::fromUtf8("actionClos_e_all"));
     action_Main_category = new QAction(MainWindowClass);
     action_Main_category->setObjectName(QString::fromUtf8("action_Main_category"));
+    action_Save_2 = new QAction(MainWindowClass);
+    action_Save_2->setObjectName(QString::fromUtf8("action_Save_2"));
+    actionSave_snippets_as = new QAction(MainWindowClass);
+    actionSave_snippets_as->setObjectName(QString::fromUtf8("actionSave_snippets_as"));
+    action_Exit = new QAction(MainWindowClass);
+    action_Exit->setObjectName(QString::fromUtf8("action_Exit"));
     centralWidget = new QWidget(MainWindowClass);
     centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
     verticalLayout_2 = new QVBoxLayout(centralWidget);
@@ -101,6 +111,8 @@ public:
     menu_Add->setObjectName(QString::fromUtf8("menu_Add"));
     menu_Snippet = new QMenu(menuBar);
     menu_Snippet->setObjectName(QString::fromUtf8("menu_Snippet"));
+    menu_File = new QMenu(menuBar);
+    menu_File->setObjectName(QString::fromUtf8("menu_File"));
     MainWindowClass->setMenuBar(menuBar);
     mainToolBar = new QToolBar(MainWindowClass);
     mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -138,6 +150,7 @@ public:
     leftDockWidget->setWidget(dockWidgetContents);
     MainWindowClass->addDockWidget(static_cast<Qt::DockWidgetArea>(1), leftDockWidget);
 
+    menuBar->addAction(menu_File->menuAction());
     menuBar->addAction(menu_Snippet->menuAction());
     menuBar->addAction(menu_Add->menuAction());
     menu_Add->addAction(action_Main_category);
@@ -148,6 +161,10 @@ public:
     menu_Snippet->addSeparator();
     menu_Snippet->addAction(action_Close);
     menu_Snippet->addAction(actionClos_e_all);
+    menu_File->addAction(action_Save_2);
+    menu_File->addAction(actionSave_snippets_as);
+    menu_File->addSeparator();
+    menu_File->addAction(action_Exit);
 
     retranslateUi(MainWindowClass);
 
@@ -179,9 +196,16 @@ public:
     actionClos_e_all->setShortcut(QApplication::translate("MainWindowClass", "Ctrl+Shift+W", 0, QApplication::UnicodeUTF8));
     action_Main_category->setText(QApplication::translate("MainWindowClass", "&Main category...", 0, QApplication::UnicodeUTF8));
     action_Main_category->setShortcut(QApplication::translate("MainWindowClass", "Ctrl+Shift+M", 0, QApplication::UnicodeUTF8));
+    action_Save_2->setText(QApplication::translate("MainWindowClass", "&Save snippets", 0, QApplication::UnicodeUTF8));
+    action_Save_2->setShortcut(QApplication::translate("MainWindowClass", "Alt+S", 0, QApplication::UnicodeUTF8));
+    actionSave_snippets_as->setText(QApplication::translate("MainWindowClass", "Save snippets &as...", 0, QApplication::UnicodeUTF8));
+    actionSave_snippets_as->setShortcut(QApplication::translate("MainWindowClass", "Alt+Shift+S", 0, QApplication::UnicodeUTF8));
+    action_Exit->setText(QApplication::translate("MainWindowClass", "&Exit", 0, QApplication::UnicodeUTF8));
+    action_Exit->setShortcut(QApplication::translate("MainWindowClass", "Ctrl+Q", 0, QApplication::UnicodeUTF8));
     tabWidget->setTabText(tabWidget->indexOf(widget), QString());
     menu_Add->setTitle(QApplication::translate("MainWindowClass", "&Add", 0, QApplication::UnicodeUTF8));
     menu_Snippet->setTitle(QApplication::translate("MainWindowClass", "&Snippet", 0, QApplication::UnicodeUTF8));
+    menu_File->setTitle(QApplication::translate("MainWindowClass", "&File", 0, QApplication::UnicodeUTF8));
     leftDockWidget->setWindowTitle(QApplication::translate("MainWindowClass", "Categories", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

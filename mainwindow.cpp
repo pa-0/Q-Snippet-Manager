@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->tabWidget->removeTab( 0 );
+    ui->searchLineEdit->setFocus();
 
     // set up icons
     categoryIcon.addPixmap( style()->standardPixmap( QStyle::SP_DirClosedIcon ), QIcon::Normal, QIcon::Off );
@@ -205,8 +206,13 @@ Snippet* MainWindow::findSnippetByTab( int atab ) {
     return 0;
 }
 
-void MainWindow::saveSnippets() {
-    QFile file( "snippets.xml" );
+void MainWindow::saveSnippets( QString fileName ) {
+    QFile file;
+    if( fileName.isEmpty() )
+        file.setFileName( "snippets.xml" );
+    else
+        file.setFileName( fileName );
+
     if( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) ) {
         QMessageBox::critical( this, tr( "Error" ), tr( "Cannot open file snippets.xml for writing." ) );
         return;
@@ -308,5 +314,66 @@ void MainWindow::on_action_Main_category_activated() {
         ui->snippetTreeView->setExpanded( parent->index(), true );
         snippetForItem.insert( item, new Snippet( name, true ) );
         insertItem( item, parent );
+    }
+}
+
+void MainWindow::on_action_Save_2_activated() {
+    saveSnippets();
+}
+
+void MainWindow::on_actionSave_snippets_as_activated() {
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save as..." ) );
+    if( !fileName.isEmpty() )
+        saveSnippets( fileName );
+}
+
+void MainWindow::on_action_Exit_activated() {
+    qApp->quit();
+}
+
+void MainWindow::on_searchLineEdit_textChanged( QString searchString ) {
+    showAllSnippets( model.invisibleRootItem() );
+    if( !searchString.isEmpty() )
+        searchModelForString( searchString, model.invisibleRootItem() );
+}
+
+// returns false of all children of a parent were hidden during parse
+bool MainWindow::searchModelForString( const QString &searchString, QStandardItem* parent ) {
+    int hiddenCount = 0;
+    bool returnFalseAnyway = false;
+
+    for( int i = 0; i < parent->rowCount(); i++ ) {
+        QStandardItem* child = parent->child( i, 0 );
+        Snippet* snippet = snippetForItem.value( child );
+
+        if( ui->snippetTreeView->isRowHidden( i, parent->index() ) )
+            hiddenCount++;
+        else if( snippet->isCategory() && !child->text().contains( searchString, Qt::CaseInsensitive ) ) {
+            if( child->rowCount() ) {
+                if( !searchModelForString( searchString, child ) ) {
+                    ui->snippetTreeView->setRowHidden( i, parent->index(), true );
+                    returnFalseAnyway = true;
+                }
+            } else {
+                ui->snippetTreeView->setRowHidden( i, parent->index(), true );
+                hiddenCount++;
+            }
+        } else if( !snippet->isCategory()
+                   && ( !child->text().contains( searchString, Qt::CaseInsensitive ) && !snippet->code().contains( searchString, Qt::CaseInsensitive ) ) ) {
+            ui->snippetTreeView->setRowHidden( i, parent->index(), true );
+            hiddenCount++;
+        }
+    }
+
+    if( returnFalseAnyway || hiddenCount == parent->rowCount() )
+        return false;
+
+    return true;
+}
+
+void MainWindow::showAllSnippets( QStandardItem* parent ) {
+    for( int i = 0; i < parent->rowCount(); i++ ) {
+        ui->snippetTreeView->setRowHidden( i, parent->index(), false );
+        showAllSnippets( parent->child( i, 0 ) );
     }
 }
