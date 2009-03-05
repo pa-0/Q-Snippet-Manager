@@ -79,8 +79,8 @@ void MainWindow::on_action_Snippet_activated() {
         Snippet* snippet = snippetForItem.value( parent );
 
         if( !parent ) {
-            parent = model.invisibleRootItem();
-            snippet = snippetForItem.value( parent );
+            QMessageBox::warning( this, tr( "Error inserting snippet" ), tr( "A snippet cannot be added to the root of the tree." ) );
+            return;
         }
         if( !snippet->isCategory() )
             parent = parent->parent();
@@ -237,11 +237,11 @@ void MainWindow::parseModel( QStandardItem* parent, QString& xml ) {
     for( int i = 0; i < parent->rowCount(); i++ ) {
         Snippet* snippet = snippetForItem.value( parent->child( i, 0 ) );
         if( snippet->isCategory() ) {
-            xml += "<category><title>" + snippet->title() + "</title>\n";
+            xml += "<category><title>" + toValidXml( snippet->title() ) + "</title>\n";
             parseModel( parent->child( i, 0 ), xml );
             xml += "</category>\n";
         } else
-            xml += "<snippet><title>" + snippet->title() + "</title>\n<code>" + snippet->code() + "</code>\n</snippet>\n";
+            xml += "<snippet><title>" + toValidXml( snippet->title() ) + "</title>\n<code>" + toValidXml( snippet->code() ) + "</code>\n</snippet>\n";
     }
 }
 
@@ -450,4 +450,28 @@ void MainWindow::on_WorkModeDialog_finished( int ) {
 void MainWindow::updateSnippetsTitle( QStandardItem* item ) {
     Snippet* snippet = snippetForItem.value( item );
     snippet->setTitle( item->text() );
+}
+
+QString MainWindow::toValidXml( QString string ) {
+    QString temp( string );
+
+    temp.replace( "&", "&amp;" );
+    temp.replace( "<", "&lt;" );
+    temp.replace( ">", "&gt;" );
+
+    return temp;
+}
+
+void MainWindow::on_actionHide_categories_activated() {
+    if( ui->leftDockWidget->isVisible() )
+        ui->leftDockWidget->hide();
+    else
+        ui->leftDockWidget->show();
+}
+
+void MainWindow::on_actionHide_description_activated() {
+    if( ui->descDockWidget->isVisible() )
+        ui->descDockWidget->hide();
+    else
+        ui->descDockWidget->show();
 }

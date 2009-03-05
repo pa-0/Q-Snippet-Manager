@@ -48,6 +48,8 @@ private:
     WorkModeDialog workModeDialog;
 
 private slots:
+    void on_actionHide_description_activated();
+    void on_actionHide_categories_activated();
     void on_WorkModeDialog_finished(int result);
     void on_action_Normal_activated();
     void on_action_Work_activated();
@@ -76,6 +78,7 @@ private slots:
     bool searchModelForString( const QString &searchString, QStandardItem* parent );
     void showAllSnippets( QStandardItem* parent );
     void snippetsCodeModified();
+    QString toValidXml( QString string );
     void updateSnippetsTitle( QStandardItem* item );
 
 // friends
