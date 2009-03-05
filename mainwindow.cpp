@@ -100,7 +100,7 @@ void MainWindow::on_action_Snippet_activated() {
 
 void MainWindow::on_action_Save_activated() {
     Snippet* snippet = findSnippetByTab( ui->tabWidget->currentIndex() );
-    snippet->save();
+    snippet->save( toValidXml( ui->descTextEdit->toPlainText() ) );
     snippet->setModified( false );
     ui->tabWidget->setTabText( snippet->tabNumber(), ui->tabWidget->tabText( snippet->tabNumber() ).remove( 0, 1 ) );
 
@@ -166,6 +166,8 @@ void MainWindow::on_snippetTreeView_activated( QModelIndex index ) {
     if( !snippet->isCategory() ) {
         if( snippet->isOpened() ) {
             ui->tabWidget->setCurrentIndex( snippet->tabNumber() );
+            ui->descTextEdit->setText( snippet->description() );
+            ui->descTextEdit->setEnabled( true );
             return;
         }
         QPlainTextEdit* edit = new QPlainTextEdit( snippet->code() );
@@ -174,6 +176,13 @@ void MainWindow::on_snippetTreeView_activated( QModelIndex index ) {
         snippet->setOpened();
         snippet->setTab( ui->tabWidget->addTab( edit, snippet->title() ) );
         ui->tabWidget->setCurrentIndex( snippet->tabNumber() );
+        ui->descTextEdit->setText( snippet->description() );
+        ui->descTextEdit->setEnabled( true );
+
+        if( snippet->isModified() ) {
+            ui->action_Save->setEnabled( true );
+            ui->actionSave_all->setEnabled( true );
+        }
 
         // set up actions
         ui->action_Close->setEnabled( true );
@@ -240,8 +249,11 @@ void MainWindow::parseModel( QStandardItem* parent, QString& xml ) {
             xml += "<category><title>" + toValidXml( snippet->title() ) + "</title>\n";
             parseModel( parent->child( i, 0 ), xml );
             xml += "</category>\n";
-        } else
-            xml += "<snippet><title>" + toValidXml( snippet->title() ) + "</title>\n<code>" + toValidXml( snippet->code() ) + "</code>\n</snippet>\n";
+        } else {
+            xml += "<snippet><title>" + toValidXml( snippet->title() ) + "</title>\n";
+            xml += "<code>" + toValidXml( snippet->code() ) + "</code>\n";
+            xml += "<description>" + toValidXml( snippet->description() ) + "</description></snippet>\n";
+        }
     }
 }
 
@@ -284,6 +296,11 @@ void MainWindow::on_action_Close_activated() {
             ui->action_Save->setEnabled( true );
             ui->actionSave_all->setEnabled( true );
         }
+    } else {
+        ui->action_Close->setEnabled( false );
+        ui->actionClos_e_all->setEnabled( false);
+        ui->descTextEdit->clear();
+        ui->descTextEdit->setEnabled( false );
     }
 }
 
@@ -336,6 +353,7 @@ void MainWindow::on_actionSave_snippets_as_activated() {
 }
 
 void MainWindow::on_action_Exit_activated() {
+    on_actionClos_e_all_activated();
     qApp->quit();
 }
 
@@ -474,4 +492,19 @@ void MainWindow::on_actionHide_description_activated() {
         ui->descDockWidget->hide();
     else
         ui->descDockWidget->show();
+}
+
+void MainWindow::on_descTextEdit_textChanged() {
+    if( ui->descTextEdit->toPlainText().isEmpty() )
+        return;
+
+    if( findSnippetByTab( ui->tabWidget->currentIndex() )->description() != ui->descTextEdit->toPlainText() )
+        snippetsCodeModified();
+}
+
+void MainWindow::on_tabWidget_currentChanged( int index ) {
+    QStandardItem* item = snippetForItem.key( findSnippetByTab( index ) );
+    if( item ) {
+        on_snippetTreeView_activated( item->index() );
+    }
 }

@@ -55,18 +55,12 @@ bool StandardItemModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
     if( itemToMove->parent() == itemFromIndex( parent ) )
         return false;
 
-    if( newParentSnippet->isCategory() ) {
-        if( !snippet->isCategory() ) {
-            // change snippet's category to newParentSnippet
-            if( !itemToMove->parent() )
-                itemToMove = takeRow( itemToMove->index().row() ).at( 0 );
-            else
-                itemToMove = itemToMove->parent()->takeRow( itemToMove->index().row() ).at( 0 );
+    if( !itemToMove->parent() )
+        itemToMove = takeRow( itemToMove->index().row() ).at( 0 );
+    else
+        itemToMove = itemToMove->parent()->takeRow( itemToMove->index().row() ).at( 0 );
 
-            p->insertItem( itemToMove, p->snippetForItem.key( newParentSnippet ) );
-            return true;
-        }
-    }
+    p->insertItem( itemToMove, p->snippetForItem.key( newParentSnippet ) );
 
-    return false;
+    return true;
 }

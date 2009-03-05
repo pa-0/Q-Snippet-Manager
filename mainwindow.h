@@ -48,6 +48,8 @@ private:
     WorkModeDialog workModeDialog;
 
 private slots:
+    void on_tabWidget_currentChanged(int index);
+    void on_descTextEdit_textChanged();
     void on_actionHide_description_activated();
     void on_actionHide_categories_activated();
     void on_WorkModeDialog_finished(int result);
