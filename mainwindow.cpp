@@ -27,8 +27,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->snippetTreeView->expandAll();
     workModeDialog.m_ui->treeView->expandAll();
 
+    // connections
     connect( ui->searchLineEdit, SIGNAL( textChanged(QString) ),
              this, SLOT(on_searchLineEdit_textChanged(QString)) );
+    connect( &model, SIGNAL( itemChanged( QStandardItem* ) ),
+             this, SLOT( updateSnippetsTitle( QStandardItem* ) ) );
 }
 
 MainWindow::~MainWindow()
@@ -343,9 +346,14 @@ void MainWindow::on_searchLineEdit_textChanged( QString searchString ) {
     else
         workModeDialog.m_ui->searchLineEdit->setText( ui->searchLineEdit->text() );
 
+    workModeDialog.showSnippets();
+
     showAllSnippets( model.invisibleRootItem() );
     if( !searchString.isEmpty() )
         searchModelForString( searchString, model.invisibleRootItem() );
+
+    if( !workModeDialog.underMouse() )
+        QTimer::singleShot( 3000, &workModeDialog, SLOT( hideSnippets() ) );
 }
 
 // returns false of all children of a parent were hidden during parse
@@ -419,14 +427,27 @@ void MainWindow::deleteChildItems( QStandardItem* parent ) {
 void MainWindow::on_action_Work_activated() {
     this->hide();
     workModeDialog.show();
+
+    mainWindowGeometry = this->saveGeometry();
+    workModeDialog.restoreGeometry( workModeDialogGeometry );
+
+    workModeDialog.setFocus();
 }
 
 void MainWindow::on_action_Normal_activated() {
     this->show();
     workModeDialog.hide();
+
+    workModeDialogGeometry = workModeDialog.saveGeometry();
+    this->restoreGeometry( mainWindowGeometry );
 }
 
 void MainWindow::on_WorkModeDialog_finished( int ) {
     // ignore the result
    on_action_Normal_activated();
+}
+
+void MainWindow::updateSnippetsTitle( QStandardItem* item ) {
+    Snippet* snippet = snippetForItem.value( item );
+    snippet->setTitle( item->text() );
 }

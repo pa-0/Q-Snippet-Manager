@@ -27,6 +27,7 @@ public:
     void setOpened( bool val = true ) { op = val; }
     void setModified( bool val = true ) { mod = val; }
     void setTab( const int& t ) { tab = t; }
+    void setTitle( const QString& atitle ) { tit = atitle; }
     int tabNumber() { return tab; }
     QString title() { return tit; }
 private:

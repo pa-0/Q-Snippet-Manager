@@ -4,7 +4,8 @@
 
 WorkModeDialog::WorkModeDialog(QWidget *parent) :
     QDialog( parent ),
-    m_ui(new Ui::WorkModeDialog)
+    m_ui(new Ui::WorkModeDialog),
+    shortcut( this )
 {
     m_ui->setupUi(this);
     setWindowFlags( Qt::WindowStaysOnTopHint | Qt::Tool );
@@ -17,9 +18,9 @@ WorkModeDialog::WorkModeDialog(QWidget *parent) :
     connect( m_ui->searchLineEdit, SIGNAL( textChanged( QString ) ),
              p, SLOT( on_searchLineEdit_textChanged( QString ) ) );
 
-    toEditMode = new QAction( this );
-    toEditMode->setShortcut( QKeySequence( "F5" ) );
-    toEditMode->setEnabled( true );
+    shortcut.setKey( QKeySequence( "F5" ) );
+
+    connect( &shortcut, SIGNAL( activated() ), p, SLOT( on_action_Normal_activated() ) );
 
     hideSnippets();
 }
@@ -41,8 +42,10 @@ void WorkModeDialog::changeEvent(QEvent *e)
 }
 
 void WorkModeDialog::hideSnippets() {
-    m_ui->treeView->hide();
-    this->setFixedHeight( m_ui->searchLineEdit->height() + 2 );
+    if( !underMouse() ) {
+        m_ui->treeView->hide();
+        this->setFixedHeight( m_ui->searchLineEdit->height() + 4 );
+    }
 }
 
 void WorkModeDialog::showSnippets() {

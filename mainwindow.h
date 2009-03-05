@@ -16,6 +16,7 @@
 #include <QPlainTextEdit>
 #include <QStandardItemModel>
 #include <QTextStream>
+#include <QTimer>
 #include <QTreeWidgetItem>
 
 #include "Snippet.h"
@@ -38,6 +39,8 @@ public:
 private:
     Ui::MainWindowClass *ui;
 
+    QByteArray mainWindowGeometry;
+    QByteArray workModeDialogGeometry;
     QHash< QStandardItem*, Snippet* > snippetForItem;
     QIcon categoryIcon;
     QIcon snippetIcon;
@@ -73,6 +76,7 @@ private slots:
     bool searchModelForString( const QString &searchString, QStandardItem* parent );
     void showAllSnippets( QStandardItem* parent );
     void snippetsCodeModified();
+    void updateSnippetsTitle( QStandardItem* item );
 
 // friends
     friend class StandardItemModel;

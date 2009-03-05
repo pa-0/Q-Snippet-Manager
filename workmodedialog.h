@@ -3,7 +3,7 @@
 
 #include <QtGui/QDialog>
 
-#include <QAction>
+#include <QShortcut>
 
 class MainWindow;
 
@@ -26,8 +26,8 @@ protected:
 private:
     Ui::WorkModeDialog *m_ui;
 
-    QAction* toEditMode;
     MainWindow* p;
+    QShortcut shortcut;
 
 private slots:
     void hideSnippets();
