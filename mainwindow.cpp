@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
              this, SLOT(on_searchLineEdit_textChanged(QString)) );
     connect( &model, SIGNAL( itemChanged( QStandardItem* ) ),
              this, SLOT( updateSnippetsTitle( QStandardItem* ) ) );
+    disconnect( ui->descTextEdit );
 }
 
 MainWindow::~MainWindow()
@@ -100,7 +101,7 @@ void MainWindow::on_action_Snippet_activated() {
 
 void MainWindow::on_action_Save_activated() {
     Snippet* snippet = findSnippetByTab( ui->tabWidget->currentIndex() );
-    snippet->save( toValidXml( ui->descTextEdit->toPlainText() ) );
+    snippet->save( ui->descTextEdit->toPlainText() );
     snippet->setModified( false );
     ui->tabWidget->setTabText( snippet->tabNumber(), ui->tabWidget->tabText( snippet->tabNumber() ).remove( 0, 1 ) );
 
@@ -166,8 +167,12 @@ void MainWindow::on_snippetTreeView_activated( QModelIndex index ) {
     if( !snippet->isCategory() ) {
         if( snippet->isOpened() ) {
             ui->tabWidget->setCurrentIndex( snippet->tabNumber() );
-            ui->descTextEdit->setText( snippet->description() );
+            ui->descTextEdit->setPlainText( snippet->tempDescription() );
             ui->descTextEdit->setEnabled( true );
+            if( snippet->isModified() ) {
+                ui->action_Save->setEnabled( true );
+                ui->actionSave_all->setEnabled( true );
+            }
             return;
         }
         QPlainTextEdit* edit = new QPlainTextEdit( snippet->code() );
@@ -176,7 +181,7 @@ void MainWindow::on_snippetTreeView_activated( QModelIndex index ) {
         snippet->setOpened();
         snippet->setTab( ui->tabWidget->addTab( edit, snippet->title() ) );
         ui->tabWidget->setCurrentIndex( snippet->tabNumber() );
-        ui->descTextEdit->setText( snippet->description() );
+        ui->descTextEdit->setPlainText( snippet->description() );
         ui->descTextEdit->setEnabled( true );
 
         if( snippet->isModified() ) {
@@ -187,6 +192,9 @@ void MainWindow::on_snippetTreeView_activated( QModelIndex index ) {
         // set up actions
         ui->action_Close->setEnabled( true );
         ui->actionClos_e_all->setEnabled( true );
+
+        connect( ui->descTextEdit, SIGNAL( textChanged() ),
+                 this, SLOT( on_descTextEdit_textChanged() ) );
     }
 }
 
@@ -230,7 +238,7 @@ void MainWindow::saveSnippets( const QString& fileName ) {
     else
         file.setFileName( fileName );
 
-    if( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) ) {
+    if( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) {
         QMessageBox::critical( this, tr( "Error" ), tr( "Cannot open file snippets.xml for writing." ) );
         return;
     }
@@ -297,6 +305,8 @@ void MainWindow::on_action_Close_activated() {
             ui->actionSave_all->setEnabled( true );
         }
     } else {
+        connect( ui->descTextEdit, SIGNAL( textChanged() ),
+                 this, SLOT( on_descTextEdit_textChanged() ) );
         ui->action_Close->setEnabled( false );
         ui->actionClos_e_all->setEnabled( false);
         ui->descTextEdit->clear();
@@ -318,7 +328,8 @@ void MainWindow::restoreTabNumbers() {
     for( i = snippetForItem.begin(); i != snippetForItem.end(); i++ )
         if( i.value()->isOpened() ) {
             for( int k = 0; k < ui->tabWidget->count(); k++ )
-                if( i.value()->title() == ui->tabWidget->tabText( k ) ) {
+                if( i.value()->title() == ui->tabWidget->tabText( k )
+                    || "*" + i.value()->title() == ui->tabWidget->tabText( k ) ) {
                     i.value()->setTab( k );
                     break;
                 }
@@ -434,6 +445,15 @@ void MainWindow::deleteChildItems( QStandardItem* parent ) {
     while( parent->hasChildren() )
         deleteChildItems( parent->child( 0, 0 ) );
 
+    if( snippetForItem.value( parent )->isOpened() ) {
+        Snippet* prev = findSnippetByTab( ui->tabWidget->currentIndex() );
+        ui->tabWidget->setCurrentIndex( snippetForItem.value( parent )->tabNumber() );
+        snippetForItem.value( parent )->setModified( false );
+        on_action_Close_activated();
+        if( prev )
+            ui->tabWidget->setCurrentIndex( prev->tabNumber() );
+    }
+
     delete snippetForItem.value( parent );
     snippetForItem.remove( parent );
     if( !parent->parent() )
@@ -449,7 +469,8 @@ void MainWindow::on_action_Work_activated() {
     mainWindowGeometry = this->saveGeometry();
     workModeDialog.restoreGeometry( workModeDialogGeometry );
 
-    workModeDialog.setFocus();
+    qApp->setActiveWindow( &workModeDialog );
+    workModeDialog.m_ui->searchLineEdit->setFocus();
 }
 
 void MainWindow::on_action_Normal_activated() {
@@ -497,6 +518,8 @@ void MainWindow::on_actionHide_description_activated() {
 void MainWindow::on_descTextEdit_textChanged() {
     if( ui->descTextEdit->toPlainText().isEmpty() )
         return;
+
+    findSnippetByTab( ui->tabWidget->currentIndex() )->setTempDescription( ui->descTextEdit->toPlainText() );
 
     if( findSnippetByTab( ui->tabWidget->currentIndex() )->description() != ui->descTextEdit->toPlainText() )
         snippetsCodeModified();

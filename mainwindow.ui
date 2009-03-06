@@ -68,7 +68,7 @@
    </widget>
    <widget class="QMenu" name="menu_Snippet">
     <property name="title">
-     <string>&amp;Snippet</string>
+     <string>S&amp;nippet</string>
     </property>
     <addaction name="action_Save"/>
     <addaction name="actionSave_all"/>
