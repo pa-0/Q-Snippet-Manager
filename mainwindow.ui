@@ -209,7 +209,7 @@
       <number>2</number>
      </property>
      <item>
-      <widget class="TextEit" name="descTextEdit">
+      <widget class="TextEdit" name="descTextEdit">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -347,9 +347,9 @@
    <header>treeview.h</header>
   </customwidget>
   <customwidget>
-   <class>TextEit</class>
+   <class>TextEdit</class>
    <extends>QTextEdit</extends>
-   <header>texteit.h</header>
+   <header>textedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
