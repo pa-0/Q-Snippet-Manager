@@ -48,6 +48,8 @@ private:
     WorkModeDialog workModeDialog;
 
 private slots:
+    void on_actionAbout_Qt_activated();
+    void on_action_About_activated();
     void on_tabWidget_currentChanged(int index);
     void on_descTextEdit_textChanged();
     void on_actionHide_description_activated();

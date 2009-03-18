@@ -464,6 +464,9 @@ void MainWindow::on_action_Work_activated() {
     this->hide();
     workModeDialog.show();
 
+    ui->action_Normal->setEnabled( true );
+    ui->action_Work->setEnabled( false );
+
     mainWindowGeometry = this->saveGeometry();
     workModeDialog.restoreGeometry( workModeDialogGeometry );
 
@@ -474,6 +477,9 @@ void MainWindow::on_action_Work_activated() {
 void MainWindow::on_action_Normal_activated() {
     this->show();
     workModeDialog.hide();
+
+    ui->action_Normal->setEnabled( false );
+    ui->action_Work->setEnabled( true );
 
     workModeDialogGeometry = workModeDialog.saveGeometry();
     this->restoreGeometry( mainWindowGeometry );
@@ -528,4 +534,15 @@ void MainWindow::on_tabWidget_currentChanged( int index ) {
     if( item ) {
         on_snippetTreeView_activated( item->index() );
     }
+}
+
+void MainWindow::on_action_About_activated() {
+    QMessageBox::about( this, tr( "About QSnippetManager" ),
+                        tr( "Author: mslupny ( mslupny@gmail.com )\n"
+                            "Use http://repo.or.cz/w/qsnippetsmanager.git if you'd like to contribute.\n"
+                            "License: GPLv3." ) );
+}
+
+void MainWindow::on_actionAbout_Qt_activated() {
+    QMessageBox::aboutQt( this, tr( "About Qt" ) );
 }

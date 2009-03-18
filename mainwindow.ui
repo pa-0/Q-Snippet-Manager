@@ -16,6 +16,9 @@
   <property name="toolTip">
    <string/>
   </property>
+  <property name="statusTip">
+   <string>Press F6 to enter Work Mode.</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <property name="spacing">
@@ -101,11 +104,19 @@
     <addaction name="actionHide_categories"/>
     <addaction name="actionHide_description"/>
    </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="action_About"/>
+    <addaction name="actionAbout_Qt"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Snippet"/>
    <addaction name="menu_Add"/>
    <addaction name="menu_Mode"/>
    <addaction name="menu_View"/>
+   <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -150,6 +161,9 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="statusTip">
+        <string>Enter a string to be searched</string>
        </property>
       </widget>
      </item>
@@ -213,6 +227,15 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="statusTip">
+        <string/>
+       </property>
       </widget>
      </item>
     </layout>
@@ -222,6 +245,9 @@
    <property name="text">
     <string>&amp;Category...</string>
    </property>
+   <property name="statusTip">
+    <string>Add a new category to the snippets' tree.</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
    </property>
@@ -229,6 +255,9 @@
   <action name="action_Snippet">
    <property name="text">
     <string>&amp;Snippet...</string>
+   </property>
+   <property name="statusTip">
+    <string>Add a new snippet to selected category.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -238,6 +267,9 @@
    <property name="text">
     <string>&amp;Save</string>
    </property>
+   <property name="statusTip">
+    <string>Save current snippet.</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
@@ -245,6 +277,9 @@
   <action name="actionSave_all">
    <property name="text">
     <string>Save &amp;all</string>
+   </property>
+   <property name="statusTip">
+    <string>Save all opened snippets.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -254,6 +289,9 @@
    <property name="text">
     <string>&amp;Close</string>
    </property>
+   <property name="statusTip">
+    <string>Close current snippet.</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
    </property>
@@ -261,6 +299,9 @@
   <action name="actionClos_e_all">
    <property name="text">
     <string>Clos&amp;e all</string>
+   </property>
+   <property name="statusTip">
+    <string>Close all opened snippets.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+W</string>
@@ -270,6 +311,9 @@
    <property name="text">
     <string>&amp;Main category...</string>
    </property>
+   <property name="statusTip">
+    <string>Add a new main category to the snippets' tree.</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+Shift+M</string>
    </property>
@@ -277,6 +321,9 @@
   <action name="action_Save_2">
    <property name="text">
     <string>&amp;Save snippets</string>
+   </property>
+   <property name="statusTip">
+    <string>Save snippets on disk.</string>
    </property>
    <property name="shortcut">
     <string>Alt+S</string>
@@ -286,6 +333,9 @@
    <property name="text">
     <string>Save snippets &amp;as...</string>
    </property>
+   <property name="statusTip">
+    <string>Save snippets in file other than the default.</string>
+   </property>
    <property name="shortcut">
     <string>Alt+Shift+S</string>
    </property>
@@ -293,6 +343,9 @@
   <action name="action_Exit">
    <property name="text">
     <string>&amp;Exit</string>
+   </property>
+   <property name="statusTip">
+    <string>Quit QSnippetsManager.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -302,13 +355,22 @@
    <property name="text">
     <string>&amp;Delete</string>
    </property>
+   <property name="statusTip">
+    <string>Delete current snippet.</string>
+   </property>
    <property name="shortcut">
     <string>Del</string>
    </property>
   </action>
   <action name="action_Normal">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>&amp;Edit</string>
+   </property>
+   <property name="statusTip">
+    <string>Switch to Edit Mode.</string>
    </property>
    <property name="shortcut">
     <string>F5</string>
@@ -318,6 +380,9 @@
    <property name="text">
     <string>&amp;Work</string>
    </property>
+   <property name="statusTip">
+    <string>Switch to Work Mode.</string>
+   </property>
    <property name="shortcut">
     <string>F6</string>
    </property>
@@ -325,6 +390,9 @@
   <action name="actionHide_categories">
    <property name="text">
     <string>Show/hide &amp;categories</string>
+   </property>
+   <property name="statusTip">
+    <string>Show or hide snipppets' categories.</string>
    </property>
    <property name="shortcut">
     <string>F3</string>
@@ -334,8 +402,27 @@
    <property name="text">
     <string>Show/hide &amp;description</string>
    </property>
+   <property name="statusTip">
+    <string>Show or hide snippets' description.</string>
+   </property>
    <property name="shortcut">
     <string>F4</string>
+   </property>
+  </action>
+  <action name="action_About">
+   <property name="text">
+    <string>&amp;About...</string>
+   </property>
+   <property name="statusTip">
+    <string>Display information about this application.</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About &amp;Qt...</string>
+   </property>
+   <property name="statusTip">
+    <string>Display information about Qt toolkit.</string>
    </property>
   </action>
  </widget>
