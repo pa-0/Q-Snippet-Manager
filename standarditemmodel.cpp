@@ -65,3 +65,7 @@ bool StandardItemModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
 
     return true;
 }
+
+Qt::DropActions StandardItemModel::supportedDropActions() const {
+    return Qt::CopyAction;
+}

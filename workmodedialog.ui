@@ -35,10 +35,10 @@
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
      <property name="dragDropOverwriteMode">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="dragDropMode">
-      <enum>QAbstractItemView::DragOnly</enum>
+      <enum>QAbstractItemView::DragDrop</enum>
      </property>
      <property name="headerHidden">
       <bool>true</bool>

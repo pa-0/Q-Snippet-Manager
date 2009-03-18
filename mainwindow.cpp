@@ -167,12 +167,13 @@ void MainWindow::on_snippetTreeView_activated( QModelIndex index ) {
     if( !snippet->isCategory() ) {
         if( snippet->isOpened() ) {
             ui->tabWidget->setCurrentIndex( snippet->tabNumber() );
-            ui->descTextEdit->setPlainText( snippet->tempDescription() );
             ui->descTextEdit->setEnabled( true );
             if( snippet->isModified() ) {
+                ui->descTextEdit->setText( snippet->tempDescription() );
                 ui->action_Save->setEnabled( true );
                 ui->actionSave_all->setEnabled( true );
-            }
+            } else
+                ui->descTextEdit->setText( snippet->description() );
             return;
         }
         QPlainTextEdit* edit = new QPlainTextEdit( snippet->code() );
@@ -210,6 +211,7 @@ void MainWindow::insertItem( QStandardItem* item, QStandardItem* parent ) {
             ( !snippetForItem.value( parent->child( i, 0 ) )->isCategory() && QString::compare( parent->child( i, 0 )->text(), item->text(), Qt::CaseInsensitive ) < 0 ) ); i++ ) ;
         parent->insertRow( i, item );
     }
+    ui->snippetTreeView->setExpanded( parent->index(), true );
 }
 
 void MainWindow::snippetsCodeModified() {
@@ -277,7 +279,7 @@ void MainWindow::on_actionSave_all_activated() {
 }
 
 void MainWindow::on_action_Close_activated() {
-    Snippet* snippet = findSnippetByTab( ui->tabWidget->currentIndex() );        
+    Snippet* snippet = findSnippetByTab( ui->tabWidget->currentIndex() );
 
     if( snippet->isModified() ) {
         QMessageBox::StandardButton answer = QMessageBox::question( this, tr( "Save?" ),
@@ -295,16 +297,12 @@ void MainWindow::on_action_Close_activated() {
 
     restoreTabNumbers();
 
-    // set up actions
-    if( ui->tabWidget->count() ) {
-        ui->action_Close->setEnabled( true );
-        ui->actionClos_e_all->setEnabled( true );
+    snippet = findSnippetByTab( ui->tabWidget->currentIndex() );
+    if( snippet )
+        on_snippetTreeView_activated( snippetForItem.key( snippet )->index() );
 
-        if( findSnippetByTab( ui->tabWidget->currentIndex() )->isModified() ) {
-            ui->action_Save->setEnabled( true );
-            ui->actionSave_all->setEnabled( true );
-        }
-    } else {
+    // set up actions
+    if( !ui->tabWidget->count() ) {
         connect( ui->descTextEdit, SIGNAL( textChanged() ),
                  this, SLOT( on_descTextEdit_textChanged() ) );
         ui->action_Close->setEnabled( false );
