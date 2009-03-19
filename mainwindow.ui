@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>668</width>
-    <height>400</height>
+    <width>790</width>
+    <height>580</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>QSnippet</string>
+   <string>QSnippetsManager</string>
   </property>
   <property name="toolTip">
    <string/>
@@ -57,7 +57,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>668</width>
+     <width>790</width>
      <height>25</height>
     </rect>
    </property>
@@ -129,7 +129,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="leftDockWidget">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -202,17 +202,23 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="descDockWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="features">
     <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="allowedAreas">
-    <set>Qt::RightDockWidgetArea</set>
+    <set>Qt::LeftDockWidgetArea</set>
    </property>
    <property name="windowTitle">
     <string>Description</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>2</number>
+    <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -228,7 +234,7 @@
         <bool>false</bool>
        </property>
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -245,6 +251,9 @@
    <property name="text">
     <string>&amp;Category...</string>
    </property>
+   <property name="toolTip">
+    <string>Create new category.</string>
+   </property>
    <property name="statusTip">
     <string>Add a new category to the snippets' tree.</string>
    </property>
@@ -255,6 +264,9 @@
   <action name="action_Snippet">
    <property name="text">
     <string>&amp;Snippet...</string>
+   </property>
+   <property name="toolTip">
+    <string>Create new snippet.</string>
    </property>
    <property name="statusTip">
     <string>Add a new snippet to selected category.</string>
@@ -309,10 +321,13 @@
   </action>
   <action name="action_Main_category">
    <property name="text">
-    <string>&amp;Main category...</string>
+    <string>&amp;Language...</string>
+   </property>
+   <property name="toolTip">
+    <string>Create new language category.</string>
    </property>
    <property name="statusTip">
-    <string>Add a new main category to the snippets' tree.</string>
+    <string>Add a new language to the snippets' tree.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+M</string>
@@ -369,6 +384,9 @@
    <property name="text">
     <string>&amp;Edit</string>
    </property>
+   <property name="toolTip">
+    <string>Switch to Edit Mode.</string>
+   </property>
    <property name="statusTip">
     <string>Switch to Edit Mode.</string>
    </property>
@@ -379,6 +397,9 @@
   <action name="action_Work">
    <property name="text">
     <string>&amp;Work</string>
+   </property>
+   <property name="toolTip">
+    <string>Switch to Work Mode.</string>
    </property>
    <property name="statusTip">
     <string>Switch to Work Mode.</string>

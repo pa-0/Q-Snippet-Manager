@@ -2,7 +2,8 @@
 #define SNIPPET_H
 
 #include <QDomElement>
-#include <QPlainTextEdit>
+
+#include "textedit.h"
 
 class Snippet {
 public:
@@ -18,9 +19,9 @@ public:
             : mod( snippet.mod ), op( snippet.mod ), ed( snippet.ed ), tit( snippet.tit ), cd( snippet.cd ),
             desc( snippet.desc ), tab( snippet.tab ), cat( snippet.cat ) {}
     ~Snippet() {}
-    QString code() { return cd; }
-    QString description() { return desc; }
-    QPlainTextEdit* edit() { return ed; }
+    QString code() const { return cd; }
+    QString description() const { return desc; }
+    TextEdit* edit() const { return ed; }
     bool isCategory() { return cat; }
     bool isModified() { return mod; }
     bool isOpened() { return op; }
@@ -29,7 +30,7 @@ public:
         desc = adesc;
     }
     void setDescription( const QString& adesc ) { desc = adesc; }
-    void setEdit( QPlainTextEdit* edit ) { ed = edit; }
+    void setEdit( TextEdit* edit ) { ed = edit; }
     void setOpened( bool val = true ) { op = val; }
     void setModified( bool val = true ) { mod = val; }
     void setTab( const int& t ) { tab = t; }
@@ -41,7 +42,7 @@ public:
 private:
     bool mod;
     bool op;
-    QPlainTextEdit* ed;
+    TextEdit* ed;
     QString tit;
     QString cd;
     QString desc;

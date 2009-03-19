@@ -13,7 +13,6 @@
 #include <QInputDialog>
 #include <QList>
 #include <QMessageBox>
-#include <QPlainTextEdit>
 #include <QStandardItemModel>
 #include <QTextStream>
 #include <QTimer>
@@ -21,6 +20,7 @@
 
 #include "Snippet.h"
 #include "standarditemmodel.h"
+#include "textedit.h"
 #include "workmodedialog.h"
 
 namespace Ui
@@ -82,6 +82,7 @@ private slots:
     bool searchModelForString( const QString &searchString, QStandardItem* parent );
     void showAllSnippets( QStandardItem* parent );
     void snippetsCodeModified();
+    QString createToolTip( const Snippet* snippet );
     QString toValidXml( QString string );
     void updateSnippetsTitle( QStandardItem* item );
 

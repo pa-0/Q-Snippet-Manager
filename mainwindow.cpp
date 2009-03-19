@@ -20,6 +20,25 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionSave_all->setEnabled( false );
     ui->action_Close->setEnabled( false );
     ui->actionClos_e_all->setEnabled( false );
+    // and their icons
+    ui->actionSave_all->setIcon( style()->standardIcon( QStyle::SP_DialogSaveButton ) );
+    ui->actionSave_snippets_as->setIcon( style()->standardIcon( QStyle::SP_DialogSaveButton ) );
+    ui->action_Save->setIcon( style()->standardIcon( QStyle::SP_DialogSaveButton ) );
+    ui->action_Save_2->setIcon( style()->standardIcon( QStyle::SP_DialogSaveButton ) );
+    ui->action_Delete->setIcon( style()->standardIcon( QStyle::SP_TrashIcon ) );
+    ui->action_Category->setIcon( style()->standardIcon( QStyle::SP_DirClosedIcon ) );
+    ui->action_Main_category->setIcon( style()->standardIcon( QStyle::SP_DirClosedIcon ) );
+    ui->action_Snippet->setIcon( style()->standardIcon( QStyle::SP_FileIcon ) );
+    ui->action_Work->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
+
+    // toolbar
+    ui->mainToolBar->addAction( ui->action_Snippet );
+    ui->mainToolBar->addAction( ui->action_Category );
+    ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction( ui->action_Save );
+    ui->mainToolBar->addAction( ui->actionSave_all );
+    ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction( ui->action_Work );
 
     // load snippets from snippets.xml and set up view
     loadSnippets();
@@ -175,14 +194,17 @@ void MainWindow::on_snippetTreeView_activated( QModelIndex index ) {
             } else
                 ui->descTextEdit->setText( snippet->description() );
             return;
-        }
-        QPlainTextEdit* edit = new QPlainTextEdit( snippet->code() );
+        } else if( ui->descDockWidget->isHidden() )
+            ui->statusBar->showMessage( tr( "Description available." ) );
+
+        TextEdit* edit = new TextEdit();
+        edit->setText( snippet->code() );
         connect( edit, SIGNAL( textChanged() ), this, SLOT( snippetsCodeModified() ) );
         snippet->setEdit( edit );
         snippet->setOpened();
         snippet->setTab( ui->tabWidget->addTab( edit, snippet->title() ) );
         ui->tabWidget->setCurrentIndex( snippet->tabNumber() );
-        ui->descTextEdit->setPlainText( snippet->description() );
+        ui->descTextEdit->setText( snippet->description() );
         ui->descTextEdit->setEnabled( true );
 
         if( snippet->isModified() ) {
@@ -336,7 +358,7 @@ void MainWindow::restoreTabNumbers() {
 
 void MainWindow::on_action_Main_category_activated() {
     bool ok;
-    QString name = QInputDialog::getText( this, tr( "New category..." ), tr( "Enter the new category name. "
+    QString name = QInputDialog::getText( this, tr( "New category..." ), tr( "Enter the new language name. "
                                                                              "It will be added to the root node." ),
                                           QLineEdit::Normal, "", &ok );
 
@@ -545,4 +567,21 @@ void MainWindow::on_action_About_activated() {
 
 void MainWindow::on_actionAbout_Qt_activated() {
     QMessageBox::aboutQt( this, tr( "About Qt" ) );
+}
+
+QString MainWindow::createToolTip( const Snippet* snippet ) {
+    QString toolTip;
+    toolTip += tr( "<b>Description:</b>" );
+    if( !snippet->description().isEmpty() )
+        toolTip += "\n" + toValidXml( snippet->description() );
+    else
+        toolTip += tr( " (empty)" );
+    toolTip += tr( "\n\n<b>Code:</b>" );
+    if( !snippet->code().isEmpty() )
+        toolTip += "\n" + toValidXml( snippet->code() );
+    else
+        toolTip += tr( " (empty)" );
+    toolTip.replace( "\n", "<br>" );
+
+    return toolTip;
 }

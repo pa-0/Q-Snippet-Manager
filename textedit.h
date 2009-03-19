@@ -1,6 +1,7 @@
 #ifndef TEXTEDIT_H
 #define TEXTEDIT_H
 
+#include <QFont>
 #include <QTextEdit>
 
 class TextEdit : public QTextEdit
