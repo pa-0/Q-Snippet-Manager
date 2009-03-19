@@ -36,9 +36,11 @@ public:
     void setTab( const int& t ) { tab = t; }
     void setTempDescription( const QString& atemp ) { tempDesc = atemp; }
     void setTitle( const QString& atitle ) { tit = atitle; }
+    void setToolTip( const QString& atooltip ) { tooltip = atooltip; }
     int tabNumber() { return tab; }
-    QString tempDescription() { return tempDesc; }
-    QString title() { return tit; }
+    QString tempDescription() const { return tempDesc; }
+    QString title() const { return tit; }
+    QString toolTip() const { return tooltip; }
 private:
     bool mod;
     bool op;
@@ -47,6 +49,7 @@ private:
     QString cd;
     QString desc;
     QString tempDesc;
+    QString tooltip;
     int tab;
     bool cat;
 };

@@ -50,7 +50,7 @@ void WorkModeDialog::hideSnippets() {
 
 void WorkModeDialog::showSnippets() {
     m_ui->treeView->show();
-    this->setFixedHeight( m_ui->searchLineEdit->height() + 250 );
+    this->setFixedHeight( m_ui->searchLineEdit->height() + 350 );
 }
 
 void WorkModeDialog::enterEvent( QEvent* ) {

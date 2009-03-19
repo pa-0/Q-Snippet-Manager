@@ -110,6 +110,7 @@ void MainWindow::on_action_Snippet_activated() {
         ui->snippetTreeView->setExpanded( parent->index(), true );
 
         snippet = new Snippet( name );
+        snippet->setToolTip( createToolTip( snippet ) );
         snippetForItem.insert( item, snippet );
         insertItem( item, parent );
 
@@ -121,6 +122,7 @@ void MainWindow::on_action_Snippet_activated() {
 void MainWindow::on_action_Save_activated() {
     Snippet* snippet = findSnippetByTab( ui->tabWidget->currentIndex() );
     snippet->save( ui->descTextEdit->toPlainText() );
+    snippet->setToolTip( createToolTip( snippet ) );
     snippet->setModified( false );
     ui->tabWidget->setTabText( snippet->tabNumber(), ui->tabWidget->tabText( snippet->tabNumber() ).remove( 0, 1 ) );
 
@@ -174,6 +176,7 @@ void MainWindow::parseCategoryElement( const QDomElement &element, QStandardItem
 
             // insert item and snippet into the hash and the model
             Snippet* snippet = new Snippet( child );
+            snippet->setToolTip( createToolTip( snippet ) );
             snippetForItem.insert( title, snippet );
             titleItem->setChild( titleItem->rowCount(), 0, title );
         }
@@ -194,7 +197,7 @@ void MainWindow::on_snippetTreeView_activated( QModelIndex index ) {
             } else
                 ui->descTextEdit->setText( snippet->description() );
             return;
-        } else if( ui->descDockWidget->isHidden() )
+        } else if( ui->descDockWidget->isHidden() && !snippet->description().isEmpty() )
             ui->statusBar->showMessage( tr( "Description available." ) );
 
         TextEdit* edit = new TextEdit();
@@ -484,6 +487,7 @@ void MainWindow::deleteChildItems( QStandardItem* parent ) {
 
 void MainWindow::on_action_Work_activated() {
     this->hide();
+    setToolTips();
     workModeDialog.show();
 
     ui->action_Normal->setEnabled( true );
@@ -497,6 +501,7 @@ void MainWindow::on_action_Work_activated() {
 }
 
 void MainWindow::on_action_Normal_activated() {
+    resetToolTips();
     this->show();
     workModeDialog.hide();
 
@@ -571,17 +576,40 @@ void MainWindow::on_actionAbout_Qt_activated() {
 
 QString MainWindow::createToolTip( const Snippet* snippet ) {
     QString toolTip;
-    toolTip += tr( "<b>Description:</b>" );
-    if( !snippet->description().isEmpty() )
-        toolTip += "\n" + toValidXml( snippet->description() );
-    else
-        toolTip += tr( " (empty)" );
-    toolTip += tr( "\n\n<b>Code:</b>" );
-    if( !snippet->code().isEmpty() )
-        toolTip += "\n" + toValidXml( snippet->code() );
-    else
-        toolTip += tr( " (empty)" );
-    toolTip.replace( "\n", "<br>" );
+    if( !snippet->description().isEmpty() ) {
+        toolTip += tr( "<b>Description:<br></b>" ) + toValidXml( snippet->description() );
+        if( !snippet->code().isEmpty() )
+            toolTip += "<br><br>";
+    }
+
+    if( !snippet->code().isEmpty() ) {
+        toolTip += tr( "<b>Code:</b><br>" );
+        QString temp( snippet->code() );
+        bool changed = false;
+        while( temp.count( '\n' ) > 40 ) {
+            temp.truncate( temp.size() / 2 );
+            changed = true;
+        }
+        toolTip += toValidXml( temp );
+        if( changed )
+            toolTip += "...";
+    }
+
+    toolTip.replace( '\n', "<br>" );
+    toolTip.replace( '\t', "&nbsp;&nbsp;&nbsp;&nbsp;" );
 
     return toolTip;
+}
+
+void MainWindow::resetToolTips() {
+    for( QHash< QStandardItem*, Snippet* >::const_iterator i = snippetForItem.constBegin();
+         i != snippetForItem.constEnd(); ++i )
+        i.key()->setToolTip( "" );
+}
+
+void MainWindow::setToolTips() {
+    for( QHash< QStandardItem*, Snippet* >::iterator i = snippetForItem.begin();
+         i != snippetForItem.end(); ++i )
+        if( !i.value()->isCategory() )
+            i.key()->setToolTip( i.value()->toolTip() );
 }

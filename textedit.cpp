@@ -1,7 +1,13 @@
 #include "textedit.h"
 
 TextEdit::TextEdit( QWidget* aparent ) : QTextEdit( aparent ) {
-    this->setCurrentFont( QFont( "Monospace", 10 ) );
+#ifdef Q_WS_X11
+    this->setCurrentFont( QFont( "Monospace", 9 ) );
+#endif
+#ifdef Q_WS_WIN
+    this->setCurrentFont( QFont( "Courier New", 9 ) );
+#endif
+    this->currentFont().setFixedPitch( true );
     this->setTabStopWidth( 32 );
 }
 

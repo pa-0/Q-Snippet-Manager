@@ -77,6 +77,8 @@ private slots:
     void loadSnippets();
     void parseCategoryElement( const QDomElement &element, QStandardItem* parent );
     void parseModel( QStandardItem* parent, QString& xml );
+    void setToolTips();
+    void resetToolTips();
     void restoreTabNumbers();
     void saveSnippets( const QString& fileName = "" );
     bool searchModelForString( const QString &searchString, QStandardItem* parent );
