@@ -4,6 +4,7 @@
 #include <QMimeData>
 #include <QStandardItemModel>
 
+class MainWindow;
 #include "Snippet.h"
 
 class MainWindow;

@@ -5,6 +5,8 @@
 
 #include <QShortcut>
 
+#include "ui_workmodedialog.h"
+
 class MainWindow;
 
 namespace Ui {

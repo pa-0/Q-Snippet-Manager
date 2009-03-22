@@ -1,7 +1,4 @@
-#include "Snippet.h"
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "ui_workmodedialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindowClass), model( this ), workModeDialog( this )
@@ -20,6 +17,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionSave_all->setEnabled( false );
     ui->action_Close->setEnabled( false );
     ui->actionClos_e_all->setEnabled( false );
+    ui->action_Cut->setEnabled( false );
+    ui->action_Copy->setEnabled( false );
+    // ui->action_Paste->setEnabled( false );
+    ui->action_Undo->setEnabled( false );
+    ui->action_Redo->setEnabled( false );
     // and their icons
     ui->actionSave_all->setIcon( style()->standardIcon( QStyle::SP_DialogSaveButton ) );
     ui->actionSave_snippets_as->setIcon( style()->standardIcon( QStyle::SP_DialogSaveButton ) );
@@ -38,6 +40,15 @@ MainWindow::MainWindow(QWidget *parent)
     ui->mainToolBar->addAction( ui->action_Save );
     ui->mainToolBar->addAction( ui->actionSave_all );
     ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction( ui->action_Delete );
+    ui->mainToolBar->addAction( ui->action_Undo );
+    ui->mainToolBar->addAction( ui->action_Redo );
+    ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction( ui->action_Cut );
+    ui->mainToolBar->addAction( ui->action_Copy );
+    ui->mainToolBar->addAction( ui->action_Paste );
+    ui->mainToolBar->addAction( ui->actionPaste_as_new_snippet );
+    ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->action_Work );
 
     // load snippets from snippets.xml and set up view
@@ -51,7 +62,11 @@ MainWindow::MainWindow(QWidget *parent)
              this, SLOT(on_searchLineEdit_textChanged(QString)) );
     connect( &model, SIGNAL( itemChanged( QStandardItem* ) ),
              this, SLOT( updateSnippetsTitle( QStandardItem* ) ) );
-    disconnect( ui->descTextEdit );
+
+    connect( ui->descTextEdit, SIGNAL(undoAvailable(bool)), ui->action_Undo, SLOT(setEnabled(bool)) );
+    connect( ui->descTextEdit, SIGNAL(redoAvailable(bool)), ui->action_Redo, SLOT(setEnabled(bool)) );
+    connect( ui->descTextEdit, SIGNAL( copyAvailable(bool) ), this, SLOT( onCopyAvailable(bool) ) );
+    connect( qApp, SIGNAL( focusChanged(QWidget*,QWidget*) ), this, SLOT( focusChanged( QWidget*, QWidget* ) ) );
 }
 
 MainWindow::~MainWindow()
@@ -87,7 +102,7 @@ void MainWindow::on_action_Category_activated() {
     }
 }
 
-void MainWindow::on_action_Snippet_activated() {
+bool MainWindow::on_action_Snippet_activated() {
     bool ok;
     QString name = QInputDialog::getText( this, tr( "New snippet..." ), tr( "Enter the new snippet name. "
                                                                              "It will be added as a child of selected category." ),
@@ -100,7 +115,7 @@ void MainWindow::on_action_Snippet_activated() {
 
         if( !parent ) {
             QMessageBox::warning( this, tr( "Error inserting snippet" ), tr( "A snippet cannot be added to the root of the tree." ) );
-            return;
+            return false;
         }
         if( !snippet->isCategory() )
             parent = parent->parent();
@@ -116,7 +131,10 @@ void MainWindow::on_action_Snippet_activated() {
 
         // open snippet for editing
         on_snippetTreeView_activated( item->index() );
-    }
+    } else
+        return false;
+
+    return true;
 }
 
 void MainWindow::on_action_Save_activated() {
@@ -201,6 +219,9 @@ void MainWindow::on_snippetTreeView_activated( QModelIndex index ) {
             ui->statusBar->showMessage( tr( "Description available." ) );
 
         TextEdit* edit = new TextEdit();
+        connect( edit, SIGNAL(undoAvailable(bool)), ui->action_Undo, SLOT(setEnabled(bool)) );
+        connect( edit, SIGNAL(redoAvailable(bool)), ui->action_Redo, SLOT(setEnabled(bool)) );
+        connect( edit, SIGNAL( copyAvailable(bool) ), this, SLOT( onCopyAvailable(bool) ) );
         edit->setText( snippet->code() );
         connect( edit, SIGNAL( textChanged() ), this, SLOT( snippetsCodeModified() ) );
         snippet->setEdit( edit );
@@ -218,9 +239,6 @@ void MainWindow::on_snippetTreeView_activated( QModelIndex index ) {
         // set up actions
         ui->action_Close->setEnabled( true );
         ui->actionClos_e_all->setEnabled( true );
-
-        connect( ui->descTextEdit, SIGNAL( textChanged() ),
-                 this, SLOT( on_descTextEdit_textChanged() ) );
     }
 }
 
@@ -328,8 +346,6 @@ void MainWindow::on_action_Close_activated() {
 
     // set up actions
     if( !ui->tabWidget->count() ) {
-        connect( ui->descTextEdit, SIGNAL( textChanged() ),
-                 this, SLOT( on_descTextEdit_textChanged() ) );
         ui->action_Close->setEnabled( false );
         ui->actionClos_e_all->setEnabled( false);
         ui->descTextEdit->clear();
@@ -612,4 +628,66 @@ void MainWindow::setToolTips() {
          i != snippetForItem.end(); ++i )
         if( !i.value()->isCategory() )
             i.key()->setToolTip( i.value()->toolTip() );
+}
+
+void MainWindow::on_action_Find_activated() {
+    ui->searchLineEdit->setFocus();
+}
+
+void MainWindow::on_action_Cut_activated() {
+    if( ui->descTextEdit->hasFocus() )
+        ui->descTextEdit->cut();
+    else {
+        Snippet* snippet = findSnippetByTab( ui->tabWidget->currentIndex() );
+        if( snippet )
+            snippet->edit()->cut();
+    }
+}
+
+void MainWindow::on_action_Copy_activated() {
+    if( ui->descTextEdit->hasFocus() )
+        ui->descTextEdit->copy();
+    else {
+        Snippet* snippet = findSnippetByTab( ui->tabWidget->currentIndex() );
+        if( snippet )
+            snippet->edit()->copy();
+    }
+}
+
+void MainWindow::on_action_Paste_activated() {
+    if( ui->descTextEdit->hasFocus() ) {
+        ui->descTextEdit->paste();
+    }
+    else {
+        Snippet* snippet = findSnippetByTab( ui->tabWidget->currentIndex() );
+        if( snippet )
+            snippet->edit()->paste();
+    }
+}
+
+void MainWindow::onCopyAvailable( bool atrue ) {
+    ui->action_Cut->setEnabled( atrue );
+    ui->action_Copy->setEnabled( atrue );
+}
+
+void MainWindow::focusChanged( QWidget*, QWidget* now ) {
+    ui->action_Cut->setEnabled( false );
+    ui->action_Copy->setEnabled( false );
+    QTextEdit* edit = dynamic_cast< TextEdit* >( now );
+
+    Snippet* snippet = findSnippetByTab( ui->tabWidget->currentIndex() );
+    if( snippet ) {
+        if( edit == snippet->edit() ) {
+            ui->action_Undo->setEnabled( edit->document()->isUndoAvailable() );
+            ui->action_Redo->setEnabled( edit->document()->isRedoAvailable() );
+        } else if( edit == ui->descTextEdit ) {
+            ui->action_Undo->setEnabled( edit->document()->isUndoAvailable() );
+            ui->action_Redo->setEnabled( edit->document()->isRedoAvailable() );
+        }
+    }
+}
+
+void MainWindow::on_actionPaste_as_new_snippet_activated() {
+    if( this->on_action_Snippet_activated() )
+        findSnippetByTab( ui->tabWidget->currentIndex() )->edit()->setPlainText( qApp->clipboard()->text() );
 }

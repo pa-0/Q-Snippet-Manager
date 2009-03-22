@@ -1,3 +1,4 @@
+#include "mainwindow.h"
 #include "treeview.h"
 
 TreeView::TreeView( QWidget* aparent ) : QTreeView( aparent ) {}

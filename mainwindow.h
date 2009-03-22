@@ -3,6 +3,7 @@
 
 #include <QtGui/QMainWindow>
 
+#include <QClipboard>
 #include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
@@ -22,6 +23,9 @@
 #include "standarditemmodel.h"
 #include "textedit.h"
 #include "workmodedialog.h"
+
+#include "ui_mainwindow.h"
+#include "ui_workmodedialog.h"
 
 namespace Ui
 {
@@ -48,6 +52,11 @@ private:
     WorkModeDialog workModeDialog;
 
 private slots:
+    void on_actionPaste_as_new_snippet_activated();
+    void on_action_Paste_activated();
+    void on_action_Copy_activated();
+    void on_action_Cut_activated();
+    void on_action_Find_activated();
     void on_actionAbout_Qt_activated();
     void on_action_About_activated();
     void on_tabWidget_currentChanged(int index);
@@ -67,14 +76,16 @@ private slots:
     void on_action_Close_activated();
     void on_actionSave_all_activated();
     void on_action_Save_activated();
-    void on_action_Snippet_activated();
+    bool on_action_Snippet_activated();
     void on_action_Category_activated();
     void on_snippetTreeView_activated(QModelIndex index);
 
     void deleteChildItems( QStandardItem* parent );
     Snippet* findSnippetByTab( int atab );
+    void focusChanged( QWidget* old, QWidget* now );
     void insertItem( QStandardItem* item, QStandardItem* parent );
     void loadSnippets();
+    void onCopyAvailable( bool atrue );
     void parseCategoryElement( const QDomElement &element, QStandardItem* parent );
     void parseModel( QStandardItem* parent, QString& xml );
     void setToolTips();
@@ -91,6 +102,7 @@ private slots:
 // friends
     friend class StandardItemModel;
     friend class WorkModeDialog;
+    friend class TextEdit;
 };
 
 #endif // MAINWINDOW_H

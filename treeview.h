@@ -4,6 +4,8 @@
 #include <QEvent>
 #include <QTreeView>
 
+class MainWindow;
+
 class TreeView : public QTreeView
 {
 public:

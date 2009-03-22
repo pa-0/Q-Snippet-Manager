@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "workmodedialog.h"
-#include "ui_workmodedialog.h"
 
 WorkModeDialog::WorkModeDialog(QWidget *parent) :
     QDialog( parent ),
