@@ -11,7 +11,8 @@ SOURCES += main.cpp \
     workmodedialog.cpp \
     listwidget.cpp \
     tagviewer.cpp \
-    welcometab.cpp
+    welcometab.cpp \
+    lineedit.cpp
 HEADERS += mainwindow.h \
     tabwidget.h \
     findreplacewidget.h \
@@ -19,7 +20,8 @@ HEADERS += mainwindow.h \
     workmodedialog.h \
     listwidget.h \
     tagviewer.h \
-    welcometab.h
+    welcometab.h \
+    lineedit.h
 FORMS += mainwindow.ui \
     tabwidget.ui \
     findreplacewidget.ui \

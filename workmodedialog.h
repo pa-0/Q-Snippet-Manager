@@ -29,7 +29,6 @@ protected:
 
 private:
     void hideList();
-    void showList();
 
     Ui::WorkModeDialog *m_ui;
 
@@ -40,6 +39,7 @@ private:
 
 private slots:
     void on_lineEdit_textChanged(QString );
+    void showList();
 
 signals:
     void searchStringEntered( QString );

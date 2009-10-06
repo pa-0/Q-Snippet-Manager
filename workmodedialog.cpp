@@ -10,6 +10,8 @@ WorkModeDialog::WorkModeDialog( QWidget *parent, QListWidget *pListWidget, QLine
 {
     m_ui->setupUi(this);
 
+    connect( m_ui->lineEdit, SIGNAL( mouseOver() ), this, SLOT( showList() ) );
+
     QSize oldSize = config.value( "WorkModeDialog/size" ).toSize();
     QPoint oldPos = config.value( "WorkModeDialog/pos" ).toPoint();
     this->setGeometry( oldPos.x(), oldPos.y(), oldSize.width(), 400 );
