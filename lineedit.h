@@ -1,6 +1,7 @@
 #ifndef LINEEDIT_H
 #define LINEEDIT_H
 
+#include <QFocusEvent>
 #include <QLineEdit>
 
 class LineEdit : public QLineEdit
@@ -11,9 +12,11 @@ public:
     ~LineEdit();
 
 protected:
+    void focusOutEvent( QFocusEvent *e );
     void mouseMoveEvent( QMouseEvent * );
 
 signals:
+    void lostFocusByTab();
     void mouseOver();
 };
 

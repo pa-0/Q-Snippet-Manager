@@ -25,22 +25,22 @@
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="findLineEdit"/>
+    <widget class="LineEdit" name="findLineEdit"/>
    </item>
    <item>
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Replace:</string>
+      <string>Replace with:</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="replaceLineEdit"/>
+    <widget class="LineEdit" name="replaceLineEdit"/>
    </item>
    <item>
     <widget class="QPushButton" name="pushButton_5">
      <property name="text">
-      <string>Find and replace all</string>
+      <string>Replace &amp;all</string>
      </property>
     </widget>
    </item>
@@ -56,6 +56,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>lineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

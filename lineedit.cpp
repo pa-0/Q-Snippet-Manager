@@ -12,3 +12,10 @@ LineEdit::~LineEdit()
 void LineEdit::mouseMoveEvent( QMouseEvent * ) {
     emit mouseOver();
 }
+
+void LineEdit::focusOutEvent( QFocusEvent *e ) {
+    QLineEdit::focusOutEvent( e );
+
+    if( e->reason() == Qt::TabFocusReason )
+        emit lostFocusByTab();
+}
