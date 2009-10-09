@@ -326,7 +326,30 @@ void MainWindow::showWorkModeDialog() {
 
 // this function generates tooltips for shown snippets only
 QStringList MainWindow::generateToolTips() {
-    return generateAttribList( "desc" );
+    QStringList code = generateAttribList( "code" );
+    QStringList desc = generateAttribList( "desc" );
+
+    QStringList toolTips;
+    for( int i = 0; i < code.size(); ++i ) {
+        QString toolTip;
+        toolTip.append( "<b>Description:</b>" );
+
+        if( desc.at( i ).isEmpty() )
+            toolTip.append( " (none)" );
+        else
+            toolTip.append( "<br>" + desc.at( i ) );
+
+        toolTip.append( "<br><br><b>Code:</b>" );
+
+        if( code.at( i ).isEmpty() )
+            toolTip.append( " (none)" );
+        else
+            toolTip.append( "<br>" + code.at( i ) );
+
+        toolTips.append( toolTip );
+    }
+
+    return toolTips;
 }
 
 QStringList MainWindow::generateCode() {
