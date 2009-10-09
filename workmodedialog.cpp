@@ -65,7 +65,6 @@ void WorkModeDialog::onFilterApplied( QStringList shownSnippets, QStringList too
     for( int i = 0; i < toolTips.size(); ++i ) {
         m_ui->listWidget->item( i )->setToolTip( toolTips.at( i ) );
         m_ui->listWidget->item( i )->setData( Qt::UserRole, codeList.at( i ) );
-        qDebug( codeList.at( i ).toAscii() );
     }
 }
 

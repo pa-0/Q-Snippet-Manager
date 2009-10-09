@@ -45,6 +45,8 @@ void FindReplaceWidget::setTextEdit( QTextEdit *te ) {
     textEdit = te;
 
     firstRun = true;
+    blockBegPos = 0;
+    blockEndPos = 999999;   // dirty
 
     connect( textEdit, SIGNAL( selectionChanged() ), this, SLOT( resetSearch() ) );
 }
@@ -114,6 +116,8 @@ void FindReplaceWidget::on_findLineEdit_returnPressed()
 
 void FindReplaceWidget::showEvent( QShowEvent * ) {
     m_ui->findLineEdit->setFocus();
+    removeHighlight();
+    highlightSearchStr( m_ui->findLineEdit->text() );
 }
 
 void FindReplaceWidget::on_findLineEdit_textChanged( QString str )
@@ -130,9 +134,6 @@ void FindReplaceWidget::resetSearch() {
 void FindReplaceWidget::on_replaceLineEdit_returnPressed()
 {
     textEdit->blockSignals( true );
-
-    if( m_ui->replaceLineEdit->text().isEmpty() )
-        return;
 
     if( m_ui->findLineEdit->text().isEmpty() ) {
         m_ui->findLineEdit->setFocus();
@@ -158,6 +159,7 @@ void FindReplaceWidget::on_replaceLineEdit_returnPressed()
 
     int delta = m_ui->replaceLineEdit->text().size() - m_ui->findLineEdit->text().size();
     blockEndPos += delta;
+    searchFromPos += delta;
 
     firstRun = false;
 
@@ -204,4 +206,15 @@ void FindReplaceWidget::highlightSelectedBlock() {
     extraSelections.append( es );
 
     textEdit->setExtraSelections( extraSelections );
+}
+
+void FindReplaceWidget::on_pushButton_5_clicked()
+{
+    QString searchStr = m_ui->findLineEdit->text();
+    QString text = textEdit->toPlainText().mid( blockBegPos, blockEndPos - blockBegPos );
+
+    int count = text.count( searchStr );
+    ++count;    // needed if find button wasn't clicked before
+    for( int i = 0; i < count; ++i )
+        on_replaceLineEdit_returnPressed();
 }

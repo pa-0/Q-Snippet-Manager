@@ -68,6 +68,7 @@ void MainWindow::setupActions() {
     findReplaceAction = new QAction( tr( "Find/Replace" ), this );
     findReplaceAction->setShortcut( QKeySequence( "Ctrl+F" ) );
     findReplaceAction->setIcon( QIcon( ":/icons/edit_find.png" ) );
+    findReplaceAction->setShortcutContext( Qt::ApplicationShortcut );
     connect( findReplaceAction, SIGNAL( triggered() ), this, SLOT( showFindReplaceWidget() ) );
     ui->mainToolBar->addAction( findReplaceAction );
 
@@ -173,6 +174,8 @@ void MainWindow::newSnippet() {
                                              tr( "Enter new snippet's name:" ) );
     if( newName.size() == 0 )
         return;
+
+    newName.remove( ";" );
 
     if( snippetsList.contains( newName ) ) {
         QMessageBox::information( this, tr( "QSnippetsManager" ),

@@ -39,6 +39,7 @@ private:
     QTextEdit *textEdit;
 
 private slots:
+    void on_pushButton_5_clicked();
     void on_replaceLineEdit_returnPressed();
     void resetSearch();
     void on_findLineEdit_textChanged(QString );
